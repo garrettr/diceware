@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 
@@ -16,21 +17,23 @@ func usage() (num_words, wordlist string) {
 	return os.Args[1], os.Args[2]
 }
 
+func fatalIfErr(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 func main() {
 	numWords, wordlist := usage()
 
 	g, err := diceware.GeneratorFromFile(wordlist)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+	fatalIfErr(err)
 
 	n, err := strconv.Atoi(numWords)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+	fatalIfErr(err)
 
 	dwp, err := g.Generate(n)
+	fatalIfErr(err)
+
 	fmt.Println(dwp)
 }
