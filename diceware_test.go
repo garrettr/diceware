@@ -19,15 +19,15 @@ func strSlicesEqual(a, b []string) bool {
 	return true
 }
 
-func TestNewFromSlice(t *testing.T) {
+func TestFromSlice(t *testing.T) {
 	testSlice := []string{"a", "b", "c"}
-	g := GeneratorFromSlice(testSlice)
+	g := FromSlice(testSlice)
 	if !strSlicesEqual(testSlice, g.words) {
-		t.Errorf("GeneratorFromSlice should have words=%v, found=%v", testSlice, g.words)
+		t.Errorf("Generator FromSlice should have words=%v, found=%v", testSlice, g.words)
 	}
 }
 
-func TestNewFromFile(t *testing.T) {
+func TestFromFile(t *testing.T) {
 	testWords := []string{"a", "b", "c"}
 
 	tf, err := ioutil.TempFile("", "")
@@ -38,9 +38,9 @@ func TestNewFromFile(t *testing.T) {
 	defer os.Remove(tf.Name())
 
 	tf.WriteString(strings.Join(testWords, "\n"))
-	g, err := GeneratorFromFile(tf.Name())
+	g, err := FromFile(tf.Name())
 	if err != nil {
-		t.Fatalf("Failed to create GeneratorFromFile with error: %s", err)
+		t.Fatalf("Failed to create Generator FromFile with error: %s", err)
 	}
 
 	// The generator's word list should match the slice of words we wrote to the file
@@ -61,7 +61,7 @@ func strSliceContains(s []string, e string) bool {
 func TestGenerate(t *testing.T) {
 	testWords := []string{"a", "b", "c"}
 	testPhraseLength := 4
-	g := GeneratorFromSlice(testWords)
+	g := FromSlice(testWords)
 	dw, err := g.Generate(testPhraseLength)
 	if err != nil {
 		t.Error(err)
@@ -69,7 +69,8 @@ func TestGenerate(t *testing.T) {
 
 	// The generated Diceware passphrase should have the expected length
 	if (len(strings.Split(dw, " "))) != testPhraseLength {
-		t.Errorf("Generated Diceware passphrase should have length %d, found '%s' with length %d", testPhraseLength, dw, len(strings.Split(dw, " ")))
+		t.Errorf("Generated Diceware passphrase should have length %d, found '%s' with length %d",
+			testPhraseLength, dw, len(strings.Split(dw, " ")))
 	}
 
 	// Each element of the generated passphrase should be from the

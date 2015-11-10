@@ -8,15 +8,15 @@ import (
 	"strings"
 )
 
-type DicewareGenerator struct {
+type Generator struct {
 	words []string
 }
 
-func GeneratorFromSlice(slice []string) *DicewareGenerator {
-	return &DicewareGenerator{slice}
+func FromSlice(slice []string) *Generator {
+	return &Generator{slice}
 }
 
-func GeneratorFromFile(fname string) (*DicewareGenerator, error) {
+func FromFile(fname string) (*Generator, error) {
 	file, err := os.Open(fname)
 	if err != nil {
 		return nil, err
@@ -32,7 +32,7 @@ func GeneratorFromFile(fname string) (*DicewareGenerator, error) {
 		return nil, err
 	}
 
-	return GeneratorFromSlice(lines), nil
+	return FromSlice(lines), nil
 }
 
 // randInt Wraps crypto/rand's rand.Int so it's easier to use with
@@ -47,14 +47,14 @@ func randInt(max int) (int, error) {
 	return int(n.Int64()), nil
 }
 
-func (d DicewareGenerator) Generate(words int) (string, error) {
-	var randWords []string
-	for i := 0; i < words; i++ {
-		ri, err := randInt(len(d.words))
+func (g Generator) Generate(length int) (string, error) {
+	var words []string
+	for i := 0; i < length; i++ {
+		r, err := randInt(len(g.words))
 		if err != nil {
 			return "", err
 		}
-		randWords = append(randWords, d.words[ri])
+		words = append(words, g.words[r])
 	}
-	return strings.Join(randWords, " "), nil
+	return strings.Join(words, " "), nil
 }
